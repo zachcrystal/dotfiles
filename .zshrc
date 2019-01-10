@@ -1,4 +1,5 @@
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export VISUAL=nvim
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/Zach/.oh-my-zsh"
@@ -11,6 +12,7 @@ plugins=(
   osx
   zsh-autosuggestions
   zsh-syntax-highlighting
+  z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -21,14 +23,34 @@ prompt pure
 PURE_PROMPT_SYMBOL=$
 PURE_CMD_MAX_EXEC_TIME=200000000000
 
-alias zshconfig="vim ~/.zshrc"
+alias vim="nvim"
+alias vi="nvim"
+alias zshconfig="nvim ~/.zshrc"
 alias reload="source ~/.zshrc"
+alias vimrc="nvim ~/.vimrc"
+alias npml="npm list -g --depth=0"
+alias npmo="npm outdated -g --depth=0"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export FZF_DEFAULT_COMMAND="fd --type f"
+export FZF_DEFAULT_COMMAND="fd --type f --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+fdir() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+fdircd() {
+  DIR=`find * -maxdepth 0 -type d -print 2> /dev/null | fzf-tmux` \
+    && cd "$DIR"
+  }
+
+# -- NVM -------------------------------------------------------------------
 export NVM_DIR="$HOME/.nvm"
   . "/usr/local/opt/nvm/nvm.sh"
 
+# -- bat -------------------------------------------------------------------
+export BAT_THEME="OneHalfDark"
