@@ -21,6 +21,14 @@ augroup END
 
 " Plugins will be downloaded under the specified directory
 call plug#begin('~/.vim/plugged')
+
+if executable('tmux')
+  " Navigate between vim and tmux splits
+  Plug 'christoomey/vim-tmux-navigator'
+  " Restore `FocusLost` and `FocusGained` events in tmux
+  Plug 'tmux-plugins/vim-tmux-focus-events'
+endif
+
 Plug 'tpope/vim-fugitive'
 Plug 'sheerun/vim-polyglot'
 Plug 'pangloss/vim-javascript'
@@ -176,7 +184,8 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sign_error = '✖'
-hi! ALEErrorSign guifg=#DF8C8C ctermfg=167
+hi! ALEErrorSign guifg=#DF8C8C
+" ctermfg=167
 let g:ale_lint_on_text_changed='normal'
 let g:ale_lint_on_save=1
 let g:ale_fix_on_save=1
