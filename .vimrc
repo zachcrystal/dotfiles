@@ -44,7 +44,13 @@ Plug 'Yggdroot/indentLine'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
+Plug 'vimwiki/vimwiki'
+Plug 'moll/vim-node'
+Plug 'ternjs/tern_for_vim'
 call plug#end()
+
+autocmd Filetype vimwiki let g:indentLine_enabled=0
+autocmd Filetype vimwiki :CocDisable
 
 " Disables the version of vim-javascript in polyglot because pangloss is the orig source
 let g:polyglot_disabled = ['javascript']
@@ -145,6 +151,8 @@ nnoremap <C-p> :FZF<CR>
 nnoremap <silent> <leader>- :Files <C-r>=expand("%:h")<CR>/<CR>
 nnoremap <leader>!  :Rg<Space>
 
+nnoremap <leader>b :b#<CR>
+
 " Ale
 nmap <leader>d <Plug>(ale_fix)
 
@@ -169,6 +177,7 @@ hi! ALEErrorSign guifg=#DF8C8C ctermfg=167
 let g:ale_lint_on_text_changed='normal'
 let g:ale_lint_on_save=1
 let g:ale_fix_on_save=1
+let g:ale_lint_on_insert_leave=1
 
 " NERDtree
 " Opens NERDTree automatically when vim starts up on opening a directory
@@ -192,6 +201,9 @@ let g:NERDTreeStatusline='NERD'
 " Maps leader q to quit
 nnoremap <Leader>q :quit<CR>
 
+" Add semicolon to end of line in insert mode
+inoremap ;; <C-o>A;
+
 " Move around splits
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -214,34 +226,49 @@ set shortmess+=c
 set completeopt-=preview
 let g:UltiSnipsExpandTrigger='<c-j>'
 
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
+" use <tab> for trigger completion and navigation to next complete item
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
-nnoremap <silent> <leader>e :call Fzf_dev()<CR>
+" move up in list
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" use <enter>  to confirm complete
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <silent><expr> <c-space> coc#refresh()
 
 " ripgrep
 if executable('rg')
+
   let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
   set grepprg=rg\ --vimgrep
   command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+
+  " Overriding fzf.vim's default :Files command.
+  " Pass zero or one args to Files command (which are then passed to Fzf_dev). Support file path completion too.
+  command! -nargs=? -complete=file Files call Fzf_dev(<q-args>)
+
+  nnoremap <silent> <leader>e :Files<CR>
+
 endif
 
 " Files + devicons
-function! Fzf_dev()
-  let l:fzf_files_options = '--preview "bat --theme="OneHalfDark" --style=numbers,changes --color always {2..-1} | head -'.&lines.'"'
+function! Fzf_dev(qargs)
+  let l:fzf_files_options = '--preview "bat --theme="OneHalfDark" --style=numbers,changes --color always {2..-1} | head -'.&lines.'" --expect=ctrl-t,ctrl-v,ctrl-x --multi --bind=ctrl-a:select-all,ctrl-d:deselect-all'
 
-  function! s:files()
-    let l:files = split(system($FZF_DEFAULT_COMMAND), '\n')
+  function! s:files(dir)
+    let l:cmd = $FZF_DEFAULT_COMMAND
+    if a:dir != ''
+      let l:cmd .= ' ' . shellescape(a:dir)
+    endif
+    let l:files = split(system(l:cmd), '\n')
     return s:prepend_icon(l:files)
   endfunction
 
@@ -256,15 +283,24 @@ function! Fzf_dev()
     return l:result
   endfunction
 
-  function! s:edit_file(item)
-    let l:pos = stridx(a:item, ' ')
-    let l:file_path = a:item[pos+1:-1]
-    execute 'silent e' l:file_path
+  function! s:edit_file(lines)
+    if len(a:lines) < 2 | return | endif
+
+    let l:cmd = get({'ctrl-x': 'split',
+                 \ 'ctrl-v': 'vertical split',
+                 \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
+
+    for l:item in a:lines[1:]
+      let l:pos = stridx(l:item, ' ')
+      let l:file_path = l:item[pos+1:-1]
+      execute 'silent '. l:cmd . ' ' . l:file_path
+    endfor
   endfunction
 
   call fzf#run({
-        \ 'source': <sid>files(),
-        \ 'sink':   function('s:edit_file'),
+        \ 'source': <sid>files(a:qargs),
+        \ 'sink*':   function('s:edit_file'),
         \ 'options': '-m ' . l:fzf_files_options,
         \ 'down':    '40%' })
 endfunction
+
