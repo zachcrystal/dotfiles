@@ -119,6 +119,9 @@ set foldlevelstart=2
 set nrformats-=octal
 
 set background=dark
+let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
 let g:onedark_termcolors=16
 let g:onedark_terminal_italics=1
 colorscheme onedark
@@ -303,4 +306,3 @@ function! Fzf_dev(qargs)
         \ 'options': '-m ' . l:fzf_files_options,
         \ 'down':    '40%' })
 endfunction
-

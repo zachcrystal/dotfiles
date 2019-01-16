@@ -54,3 +54,4 @@ export NVM_DIR="$HOME/.nvm"
 
 # -- bat -------------------------------------------------------------------
 export BAT_THEME="OneHalfDark"
+export TERM=xterm-256color-italic
