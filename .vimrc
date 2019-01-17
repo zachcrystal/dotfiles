@@ -43,7 +43,7 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree'
-Plug 'majutsushi/tagbar'
+" Plug 'majutsushi/tagbar'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'w0rp/ale'
@@ -54,7 +54,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
 Plug 'vimwiki/vimwiki'
 Plug 'moll/vim-node'
-Plug 'ternjs/tern_for_vim'
+" Plug 'ternjs/tern_for_vim'
 call plug#end()
 
 autocmd Filetype vimwiki let g:indentLine_enabled=0
@@ -98,6 +98,8 @@ hi! link typescriptIdentiferName Special
 set cursorline                              " set cursorline
 set number                                  " show current line number
 set relativenumber                          " show relative line numbers
+set smartcase
+set ignorecase
 
 set mouse=a                                 " enable mouse support
 if !has('nvim')
@@ -184,8 +186,7 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sign_error = '✖'
-hi! ALEErrorSign guifg=#DF8C8C
-" ctermfg=167
+hi! ALEErrorSign guifg=#D75F5F ctermfg=167
 let g:ale_lint_on_text_changed='normal'
 let g:ale_lint_on_save=1
 let g:ale_fix_on_save=1
@@ -193,8 +194,8 @@ let g:ale_lint_on_insert_leave=1
 
 " NERDtree
 " Opens NERDTree automatically when vim starts up on opening a directory
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 " Maps Ctrl-N to open NERDTree
 map <C-n> :NERDTreeToggle<CR>
 " Close vim if the only window left open is a NERDTree
@@ -248,6 +249,15 @@ inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
+
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 " move up in list
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"

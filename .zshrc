@@ -4,6 +4,9 @@ export VISUAL=nvim
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/Zach/.oh-my-zsh"
 
+eval "$(rbenv init -)"
+source $(dirname $(gem which colorls))/tab_complete.sh
+
 ZSH_THEME=""
 
 plugins=(
