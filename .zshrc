@@ -1,11 +1,12 @@
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export VISUAL=nvim
 
+source ~/.dotfiles/zsh/alias.zsh
+
+DISABLE_AUTO_TITLE=true
+
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/Zach/.oh-my-zsh"
-
-eval "$(rbenv init -)"
-source $(dirname $(gem which colorls))/tab_complete.sh
 
 ZSH_THEME=""
 
@@ -25,14 +26,6 @@ prompt pure
 
 PURE_PROMPT_SYMBOL=$
 PURE_CMD_MAX_EXEC_TIME=200000000000
-
-alias vim="nvim"
-alias vi="nvim"
-alias zshconfig="nvim ~/.zshrc"
-alias reload="source ~/.zshrc"
-alias vimrc="nvim ~/.vimrc"
-alias npml="npm list -g --depth=0"
-alias npmo="npm outdated -g --depth=0"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
