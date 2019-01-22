@@ -3,7 +3,7 @@ export VISUAL=nvim
 
 source ~/.dotfiles/zsh/alias.zsh
 
-DISABLE_AUTO_TITLE=true
+# DISABLE_AUTO_TITLE=true
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/Zach/.oh-my-zsh"
@@ -32,14 +32,14 @@ PURE_CMD_MAX_EXEC_TIME=200000000000
 export FZF_DEFAULT_COMMAND="fd --type f --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-fdir() {
+fa() {
   local dir
   dir=$(find ${1:-.} -path '*/\.*' -prune \
                   -o -type d -print 2> /dev/null | fzf +m) &&
   cd "$dir"
 }
 
-fdircd() {
+fad() {
   DIR=`find * -maxdepth 0 -type d -print 2> /dev/null | fzf-tmux` \
     && cd "$DIR"
   }

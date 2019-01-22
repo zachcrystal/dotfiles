@@ -30,20 +30,22 @@ if executable('tmux')
 endif
 
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'airblade/vim-gitgutter'
 Plug 'sheerun/vim-polyglot'
 Plug 'pangloss/vim-javascript'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mhinz/vim-startify'
-Plug 'tpope/vim-commentary' " Allow comment/uncomment lines
+Plug 'tpope/vim-commentary'
+Plug 'romainl/vim-cool'
 Plug 'tpope/vim-surround'
 Plug 'Shougo/denite.nvim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree'
-" Plug 'majutsushi/tagbar'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'w0rp/ale'
@@ -54,7 +56,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
 Plug 'vimwiki/vimwiki'
 Plug 'moll/vim-node'
-" Plug 'ternjs/tern_for_vim'
 call plug#end()
 
 autocmd Filetype vimwiki let g:indentLine_enabled=0
@@ -223,6 +224,10 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Space p
+nnoremap <Leader>pi :PlugInstall<CR>
+nnoremap <Leader>pu :PlugUpdate<CR>
+
 " Resizes splits to be equal when the terminal is resized
 autocmd VimResized * execute "normal! \<c-w>="
 
@@ -257,7 +262,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+" nmap <leader>qf  <Plug>(coc-fix-current)
 
 " move up in list
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
